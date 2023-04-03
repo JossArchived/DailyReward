@@ -1,0 +1,4 @@
+name: DailyReward
+version: '${project.version}'
+main: josscoder.dailyreward.dailyreward.DailyReward
+api-version: 1.17
