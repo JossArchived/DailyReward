@@ -1,0 +1,16 @@
+mongodb:
+  host: "localhost"
+  port: 27017
+  database: "minecraft"
+  username: "root"
+  password: "password"
+
+rewards:
+  "1": #days in which the player entered from 1 to 31
+    commands:
+      - ""
+      - ""
+  "3":
+    commands:
+      - ""
+      - ""
