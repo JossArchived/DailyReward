@@ -57,11 +57,11 @@ public final class DailyRewardPlugin extends JavaPlugin {
             });
         }
 
-        getLogger().info(ChatColor.GREEN + "this plugin has been enabled");
+        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "this plugin has been enabled");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info(ChatColor.RED + "this plugin has been disabled");
+        getServer().getConsoleSender().sendMessage(ChatColor.RED + "this plugin has been disabled");
     }
 }

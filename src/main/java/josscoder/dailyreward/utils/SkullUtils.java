@@ -14,7 +14,7 @@ public class SkullUtils {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&c&lReward Claimed"));
+            itemMeta.setDisplayName(ChatColor.RED + "Reward Claimed");
             itemStack.setItemMeta(itemMeta);
         }
 
@@ -29,7 +29,7 @@ public class SkullUtils {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&a&lReward of day #" + day + " &r&b(Click to claim)"));
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&a&lReward of Day #" + day + " &r&b(Click to claim)"));
             itemStack.setItemMeta(itemMeta);
         }
 
@@ -43,7 +43,7 @@ public class SkullUtils {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(String.format(ChatColor.RED + "Day #%s (No ready)", day));
+            itemMeta.setDisplayName(String.format(ChatColor.RED + "Reward of Day #%s (No ready)", day));
             itemStack.setItemMeta(itemMeta);
         }
 
