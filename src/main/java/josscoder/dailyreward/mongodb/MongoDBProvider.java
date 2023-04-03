@@ -13,6 +13,7 @@ import lombok.Getter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Getter
@@ -58,8 +59,8 @@ public class MongoDBProvider {
     public void createUserDoc(UUID uuid) {
         Document userDoc = new Document(Fields.UUID.id(), uuid.toString())
                 .append(Fields.CONSECUTIVE_DAYS.id(), 1)
-                .append(Fields.LAST_LOGIN.id(), new Date())
-                .append(Fields.REWARDS_CLAIMED.id(), new ArrayList<>());
+                .append(Fields.LAST_LOGIN_TIME.id(), LocalDate.now().toString())
+                .append(Fields.REWARD_DAYS_CLAIMED.id(), new ArrayList<>());
 
         usersCollection.insertOne(userDoc);
     }
@@ -68,36 +69,36 @@ public class MongoDBProvider {
         return getUserDoc(uuid).getInteger(Fields.CONSECUTIVE_DAYS.id());
     }
 
-    public Date getLastLogin(UUID uuid) {
-        return getUserDoc(uuid).getDate(Fields.LAST_LOGIN.id());
-    }
-
     public List<Integer> getRewardsClaimed(UUID uuid) {
-        return getUserDoc(uuid).getList(Fields.REWARDS_CLAIMED.id(), Integer.class, new ArrayList<>());
+        return getUserDoc(uuid).getList(Fields.REWARD_DAYS_CLAIMED.id(), Integer.class, new ArrayList<>());
     }
 
     public boolean hasDayClaimed(int day, UUID uuid) {
         return getRewardsClaimed(uuid).contains(day);
     }
 
-    private void updateFields(UUID uuid, Bson fields) {
-        usersCollection.updateOne(Filters.eq(Fields.UUID.id(), uuid), fields);
+    private void updateField(UUID uuid, Bson field) {
+        usersCollection.updateOne(Filters.eq(Fields.UUID.id(), uuid.toString()), field);
     }
 
-    public void claimDayReward(int rewardDay, UUID uuid) {
-        updateFields(uuid, Updates.addToSet(Fields.REWARDS_CLAIMED.id(), rewardDay));
+    public void claimDayReward(Integer rewardDay, UUID uuid) {
+        updateField(uuid, Updates.addToSet(Fields.REWARD_DAYS_CLAIMED.id(), rewardDay));
     }
 
     public void increaseConsecutiveDays(UUID uuid) {
-        int increasedConsecutiveDays = getConsecutiveDays(uuid) + 1;
-        updateFields(uuid, Updates.set(Fields.CONSECUTIVE_DAYS.id(), increasedConsecutiveDays));
+        updateField(uuid, Updates.inc(Fields.CONSECUTIVE_DAYS.id(), 1));
     }
 
     public void updateLastLogin(UUID uuid) {
-        updateFields(uuid, Updates.set(Fields.LAST_LOGIN.id(), new Date()));
+        updateField(uuid, Updates.set(Fields.LAST_LOGIN_TIME.id(), LocalDate.now().toString()));
     }
 
     public boolean connectedToday(UUID uuid) {
-        return getLastLogin(uuid).equals(new Date());
+        Document userDoc = getUserDoc(uuid);
+        if (userDoc == null) {
+            return false;
+        }
+        String lastLogin = userDoc.getString(Fields.LAST_LOGIN_TIME.id());
+        return lastLogin != null && lastLogin.equalsIgnoreCase(LocalDate.now().toString());
     }
 }
