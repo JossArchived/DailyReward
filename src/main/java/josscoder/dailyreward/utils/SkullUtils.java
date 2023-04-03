@@ -13,8 +13,10 @@ public class SkullUtils {
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&c&lReward Claimed"));
-        itemStack.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&c&lReward Claimed"));
+            itemStack.setItemMeta(itemMeta);
+        }
 
         return itemStack;
     }
@@ -25,8 +27,10 @@ public class SkullUtils {
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&a&lReward of day #" + day + "\n&r&b Click to claim"));
-        itemStack.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&a&lReward of day #" + day + "\n&r&b Click to claim"));
+            itemStack.setItemMeta(itemMeta);
+        }
 
         return itemStack;
     }
@@ -37,8 +41,10 @@ public class SkullUtils {
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(" ");
-        itemStack.setItemMeta(itemMeta);
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(" ");
+            itemStack.setItemMeta(itemMeta);
+        }
 
         return itemStack;
     }

@@ -7,6 +7,7 @@ import josscoder.dailyreward.mongodb.MongoDBProvider;
 import josscoder.dailyreward.reward.RewardFactory;
 import lombok.Getter;
 import org.bukkit.ChatColor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,16 +43,19 @@ public final class DailyRewardPlugin extends JavaPlugin {
 
         gui = new SpiGUI(this);
 
-        getServer().getPluginCommand("dailyreward").setExecutor((commandSender, command, s, strings) -> {
-            if (!(commandSender instanceof Player)) {
-                return false;
-            }
+        PluginCommand pluginCommand = getServer().getPluginCommand("dailyreward");
+        if (pluginCommand != null) {
+            pluginCommand.setExecutor((commandSender, command, s, strings) -> {
+                if (!(commandSender instanceof Player)) {
+                    return false;
+                }
 
-            RewardMenu rewardMenu = new RewardMenu(((Player) commandSender).getPlayer());
-            rewardMenu.send();
+                RewardMenu rewardMenu = new RewardMenu(((Player) commandSender).getPlayer());
+                rewardMenu.send();
 
-            return true;
-        });
+                return true;
+            });
+        }
 
         getLogger().info(ChatColor.GREEN + "this plugin has been enabled");
     }
