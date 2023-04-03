@@ -44,6 +44,11 @@ public final class DailyRewardPlugin extends JavaPlugin {
         Events.subscribe(PlayerJoinEvent.class, EventPriority.HIGHEST).handler(event -> {
             UUID uuid = event.getPlayer().getUniqueId();
 
+            if (!mongoDBProvider.existsUserDoc(uuid)) {
+                mongoDBProvider.createUserDoc(uuid);
+                return;
+            }
+
             if (mongoDBProvider.connectedToday(uuid)) {
                 return;
             }

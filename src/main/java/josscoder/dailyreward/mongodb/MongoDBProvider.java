@@ -38,31 +38,33 @@ public class MongoDBProvider {
         usersCollection = database.getCollection("users");
     }
 
-    private Document getUserDocOrCreate(UUID uuid) {
-        Document userDoc = usersCollection.find(Filters.eq(Fields.UUID.id(), uuid.toString())).first();
+    public Document getUserDoc(UUID uuid) {
+        return usersCollection.find(Filters.eq(Fields.UUID.id(), uuid.toString())).first();
+    }
 
-        if (userDoc == null) {
-            userDoc = new Document(Fields.UUID.id(), uuid.toString())
-                    .append(Fields.CONSECUTIVE_DAYS.id(), 1)
-                    .append(Fields.LAST_LOGIN.id(), new Date())
-                    .append(Fields.DATES_CLAIMED.id(), new ArrayList<>());
+    public boolean existsUserDoc(UUID uuid) {
+        return getUserDoc(uuid) != null;
+    }
 
-            usersCollection.insertOne(userDoc);
-        }
+    public void createUserDoc(UUID uuid) {
+        Document userDoc = new Document(Fields.UUID.id(), uuid.toString())
+                .append(Fields.CONSECUTIVE_DAYS.id(), 1)
+                .append(Fields.LAST_LOGIN.id(), new Date())
+                .append(Fields.DATES_CLAIMED.id(), new ArrayList<>());
 
-        return userDoc;
+        usersCollection.insertOne(userDoc);
     }
 
     public int getConsecutiveDays(UUID uuid) {
-        return getUserDocOrCreate(uuid).getInteger(Fields.CONSECUTIVE_DAYS.id());
+        return getUserDoc(uuid).getInteger(Fields.CONSECUTIVE_DAYS.id());
     }
 
     public Date getLastLogin(UUID uuid) {
-        return getUserDocOrCreate(uuid).getDate(Fields.LAST_LOGIN.id());
+        return getUserDoc(uuid).getDate(Fields.LAST_LOGIN.id());
     }
 
     public List<Date> getDatesClaimed(UUID uuid) {
-        return getUserDocOrCreate(uuid).getList(Fields.DATES_CLAIMED.id(), Date.class, new ArrayList<>());
+        return getUserDoc(uuid).getList(Fields.DATES_CLAIMED.id(), Date.class, new ArrayList<>());
     }
 
     private void updateFields(UUID uuid, Bson fields) {
