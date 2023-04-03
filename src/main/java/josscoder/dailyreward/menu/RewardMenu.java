@@ -61,14 +61,14 @@ public class RewardMenu {
                     button = new SGButton(SkullUtils.getClaimedSkull())
                             .withListener((InventoryClickEvent event) -> {
                                 HumanEntity whoClicked = event.getWhoClicked();
-                                whoClicked.getWorld().playSound(whoClicked.getLocation(), Sound.ANVIL_LAND, 1, 0.5f);
+                                whoClicked.getWorld().playSound(whoClicked.getLocation(), Sound.BLOCK_ANVIL_PLACE, 1, 0.5f);
                                 whoClicked.sendMessage(ChatColor.RED + "You have already claimed the rewards of this day!");
                             });
                 } else {
                     button = new SGButton(SkullUtils.getRewardSkull(day.get()))
                             .withListener((InventoryClickEvent event) -> {
                                 HumanEntity whoClicked = event.getWhoClicked();
-                                whoClicked.getWorld().playSound(whoClicked.getLocation(), Sound.LEVEL_UP, 1, 1);
+                                whoClicked.getWorld().playSound(whoClicked.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                                 whoClicked.sendMessage(ChatColor.GREEN + "You correctly claimed the gift of the day #" + day.get());
 
                                 mongoDBProvider.claimDayReward(day.get(), player.getUniqueId());
