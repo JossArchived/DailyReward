@@ -2,3 +2,10 @@ name: DailyReward
 version: '${project.version}'
 main: josscoder.dailyreward.DailyRewardPlugin
 api-version: 1.17
+
+commands:
+  dailyreward:
+    description: "Daily Rewards Menu"
+    aliases:
+      - dailyrewards
+      - dr

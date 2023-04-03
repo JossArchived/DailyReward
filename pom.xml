@@ -15,10 +15,11 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spigot.version>1.17-R0.1-SNAPSHOT</spigot.version>
-        <lucko.version>5.6.13</lucko.version>
+        <spigot.version>1.8.8-R0.1-SNAPSHOT</spigot.version>
+        <gui.version>v1.3</gui.version>
         <mongo.version>3.12.12</mongo.version>
         <lombok.version>1.18.26</lombok.version>
+        <skullcreator.version>3.0.1</skullcreator.version>
     </properties>
 
     <repositories>
@@ -30,6 +31,14 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>skullcreator-repo</id>
+            <url>https://github.com/deanveloper/SkullCreator/raw/mvn-repo/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -40,9 +49,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>me.lucko</groupId>
-            <artifactId>helper</artifactId>
-            <version>${lucko.version}</version>
+            <groupId>com.samjakob</groupId>
+            <artifactId>SpiGUI</artifactId>
+            <version>${gui.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -54,6 +63,12 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.dbassett</groupId>
+            <artifactId>skullcreator</artifactId>
+            <version>${skullcreator.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

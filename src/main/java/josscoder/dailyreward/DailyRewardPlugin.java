@@ -1,30 +1,27 @@
 package josscoder.dailyreward;
 
+import com.samjakob.spigui.SpiGUI;
+import josscoder.dailyreward.listener.ConnectionListener;
 import josscoder.dailyreward.menu.RewardMenu;
 import josscoder.dailyreward.mongodb.MongoDBProvider;
 import josscoder.dailyreward.reward.RewardFactory;
 import lombok.Getter;
-import me.lucko.helper.Commands;
-import me.lucko.helper.Events;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.UUID;
-
+@Getter
 public final class DailyRewardPlugin extends JavaPlugin {
 
     @Getter
     private static DailyRewardPlugin instance;
 
-    private MongoDBProvider mongoDBProvider;
+    private SpiGUI gui;
 
     @Override
     public void onLoad() {
         instance = this;
-        mongoDBProvider = new MongoDBProvider();
     }
 
     @Override
@@ -32,7 +29,7 @@ public final class DailyRewardPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         FileConfiguration config = getConfig();
-        mongoDBProvider.init(config.getString("mongodb.host", "localhost"),
+        MongoDBProvider.make(config.getString("mongodb.host", "localhost"),
                 config.getInt("mongodb.port", 27017),
                 config.getString("mongodb.database"),
                 config.getString("mongodb.username"),
@@ -41,32 +38,26 @@ public final class DailyRewardPlugin extends JavaPlugin {
 
         RewardFactory.make(config);
 
-        Events.subscribe(PlayerJoinEvent.class, EventPriority.HIGHEST).handler(event -> {
-            UUID uuid = event.getPlayer().getUniqueId();
+        getServer().getPluginManager().registerEvents(new ConnectionListener(), this);
 
-            if (!mongoDBProvider.existsUserDoc(uuid)) {
-                mongoDBProvider.createUserDoc(uuid);
-                return;
+        gui = new SpiGUI(this);
+
+        getServer().getPluginCommand("dailyreward").setExecutor((commandSender, command, s, strings) -> {
+            if (!(commandSender instanceof Player)) {
+                return false;
             }
 
-            if (mongoDBProvider.connectedToday(uuid)) {
-                return;
-            }
+            RewardMenu rewardMenu = new RewardMenu(((Player) commandSender).getPlayer());
+            rewardMenu.send();
 
-            mongoDBProvider.updateLastLogin(uuid);
-            mongoDBProvider.increaseConsecutiveDays(uuid);
+            return true;
         });
 
-        Commands.create()
-                .assertPlayer()
-                .handler(command -> new RewardMenu(command.sender()))
-                .register("dailyreward");
-
-        getLogger().info(ChatColor.GREEN + "<DailyReward> has been enabled");
+        getLogger().info(ChatColor.GREEN + "this plugin has been enabled");
     }
 
     @Override
     public void onDisable() {
-        getLogger().info(ChatColor.RED + "<DailyReward> has been disabled");
+        getLogger().info(ChatColor.RED + "this plugin has been disabled");
     }
 }

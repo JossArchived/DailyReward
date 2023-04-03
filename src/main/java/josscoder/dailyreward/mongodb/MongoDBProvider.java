@@ -18,11 +18,14 @@ import java.util.*;
 @Getter
 public class MongoDBProvider {
 
-    private MongoClient client;
-    private MongoDatabase database;
-    private MongoCollection<Document> usersCollection;
+    @Getter
+    private static MongoDBProvider instance;
 
-    public void init(String host, int port, String username, String databaseId, String password) {
+    private final MongoClient client;
+    private final MongoDatabase database;
+    private final MongoCollection<Document> usersCollection;
+
+    public MongoDBProvider(String host, int port, String username, String databaseId, String password) {
         MongoCredential credential = MongoCredential.createCredential(username, databaseId, password.toCharArray());
 
         ServerAddress serverAddress = new ServerAddress(host, port);
@@ -36,6 +39,12 @@ public class MongoDBProvider {
         database = client.getDatabase(databaseId);
 
         usersCollection = database.getCollection("users");
+
+        instance = this;
+    }
+
+    public static void make(String host, int port, String username, String databaseId, String password) {
+        new MongoDBProvider(host, port, username, databaseId, password);
     }
 
     public Document getUserDoc(UUID uuid) {
@@ -50,7 +59,7 @@ public class MongoDBProvider {
         Document userDoc = new Document(Fields.UUID.id(), uuid.toString())
                 .append(Fields.CONSECUTIVE_DAYS.id(), 1)
                 .append(Fields.LAST_LOGIN.id(), new Date())
-                .append(Fields.DATES_CLAIMED.id(), new ArrayList<>());
+                .append(Fields.REWARDS_CLAIMED.id(), new ArrayList<>());
 
         usersCollection.insertOne(userDoc);
     }
@@ -63,16 +72,20 @@ public class MongoDBProvider {
         return getUserDoc(uuid).getDate(Fields.LAST_LOGIN.id());
     }
 
-    public List<Date> getDatesClaimed(UUID uuid) {
-        return getUserDoc(uuid).getList(Fields.DATES_CLAIMED.id(), Date.class, new ArrayList<>());
+    public List<Integer> getRewardsClaimed(UUID uuid) {
+        return getUserDoc(uuid).getList(Fields.REWARDS_CLAIMED.id(), Integer.class, new ArrayList<>());
+    }
+
+    public boolean hasDayClaimed(int day, UUID uuid) {
+        return getRewardsClaimed(uuid).contains(day);
     }
 
     private void updateFields(UUID uuid, Bson fields) {
         usersCollection.updateOne(Filters.eq(Fields.UUID.id(), uuid), fields);
     }
 
-    public void claimDate(Date date, UUID uuid) {
-        updateFields(uuid, Updates.addToSet(Fields.DATES_CLAIMED.id(), date));
+    public void claimDayReward(int rewardDay, UUID uuid) {
+        updateFields(uuid, Updates.addToSet(Fields.REWARDS_CLAIMED.id(), rewardDay));
     }
 
     public void increaseConsecutiveDays(UUID uuid) {

@@ -4,7 +4,7 @@ public enum Fields {
     UUID,
     CONSECUTIVE_DAYS,
     LAST_LOGIN,
-    DATES_CLAIMED;
+    REWARDS_CLAIMED;
 
     public String id() {
         return name().toLowerCase();

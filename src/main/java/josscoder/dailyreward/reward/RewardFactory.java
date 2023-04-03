@@ -42,4 +42,11 @@ public class RewardFactory {
             rewards.add(reward);
         });
     }
+
+    public Reward getReward(int day) {
+        return rewards.stream()
+                .filter(reward -> reward.getDay() == day)
+                .findFirst()
+                .orElse(null);
+    }
 }
