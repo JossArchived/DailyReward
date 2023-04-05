@@ -11,6 +11,7 @@ public class SkullUtils {
         String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjN2MxZDBhMWNlOGRmOGQ2Y2QwODU4NjdhZWIxZjRmNzk2YTBlM2U1Y2EzZGZiNjcxZjU3N2UwZDNjZDgyMyJ9fX0=";
 
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
+        itemStack.setAmount(day);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
@@ -40,6 +41,7 @@ public class SkullUtils {
         String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODU2MjU2MzhkNDFhYTJkM2JiNGNmZjkzYWFkNjBkOTdlOWMxZDUyYTA0NDExZmQxZmRjNjliZmIxZmRiNTllZSJ9fX0=";
 
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
+        itemStack.setAmount(day);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
