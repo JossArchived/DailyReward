@@ -94,6 +94,21 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/*</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>dev.dbassett:*</artifact>
+                                    <excludes>
+                                        <exclude>plugin.yml</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
