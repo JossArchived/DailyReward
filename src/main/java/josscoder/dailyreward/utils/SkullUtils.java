@@ -8,7 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SkullUtils {
 
     public static ItemStack getClaimedRewardSkull(int day) {
-        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTIxYTNlMDRmNTBhYTkzZmJjMDBlY2IyZTcxYTJkOTUxNmZmZTQyMDZiZGNkZmE5NTNkNmJjZThmZmYxZDI0MyJ9fX0=";
+        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdjN2MxZDBhMWNlOGRmOGQ2Y2QwODU4NjdhZWIxZjRmNzk2YTBlM2U1Y2EzZGZiNjcxZjU3N2UwZDNjZDgyMyJ9fX0=";
 
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
 
@@ -22,7 +22,7 @@ public class SkullUtils {
     }
 
     public static ItemStack getRewardSkull(int day) {
-        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzZlNWQ5M2ZmNDFiZGVkNTc2MjA5M2JmODFhMzI3M2RiMDc5YWE0NTdiOGRiZjQ4Mjc1NDg3MGFmNGIwZjBhOSJ9fX0=";
+        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWRjMzZjOWNiNTBhNTI3YWE1NTYwN2EwZGY3MTg1YWQyMGFhYmFhOTAzZThkOWFiZmM3ODI2MDcwNTU0MGRlZiJ9fX0=";
 
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
         itemStack.setAmount(day);
@@ -37,7 +37,7 @@ public class SkullUtils {
     }
 
     public static ItemStack getNoReadyRewardSkull(int day) {
-        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRjMjI0MTQ1MjVlMDUwZjlhZjRmZGVmMWE0YWM1YjljNTJhYWRiOGI0NThhMGRiNzVjYWM5MDU5ZDgyODJmIn19fQ==";
+        String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODU2MjU2MzhkNDFhYTJkM2JiNGNmZjkzYWFkNjBkOTdlOWMxZDUyYTA0NDExZmQxZmRjNjliZmIxZmRiNTllZSJ9fX0=";
 
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
 
