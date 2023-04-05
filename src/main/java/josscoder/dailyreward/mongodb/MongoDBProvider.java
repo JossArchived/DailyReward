@@ -48,33 +48,30 @@ public class MongoDBProvider {
         new MongoDBProvider(host, port, username, databaseId, password);
     }
 
-    public Document getUserDoc(UUID uuid) {
-        return usersCollection.find(Filters.eq(Fields.UUID.id(), uuid.toString())).first();
+    public Document getOrCreateUserDoc(UUID uuid) {
+        Document userDoc = usersCollection.find(Filters.eq(Fields.UUID.id(), uuid.toString())).first();
+        if (userDoc == null) {
+            userDoc = new Document(Fields.UUID.id(), uuid.toString())
+                    .append(Fields.CONSECUTIVE_DAYS.id(), 1)
+                    .append(Fields.LAST_LOGIN_TIME.id(), LocalDate.now().toString())
+                    .append(Fields.REWARD_DAYS_CLAIMED.id(), new ArrayList<>());
+            usersCollection.insertOne(userDoc);
+        }
+
+        return userDoc;
     }
 
-    public boolean existsUserDoc(UUID uuid) {
-        return getUserDoc(uuid) != null;
+    public int getConsecutiveDaysFromDoc(Document document) {
+        return document.getInteger(Fields.CONSECUTIVE_DAYS.id());
     }
 
-    public void createUserDoc(UUID uuid) {
-        Document userDoc = new Document(Fields.UUID.id(), uuid.toString())
-                .append(Fields.CONSECUTIVE_DAYS.id(), 1)
-                .append(Fields.LAST_LOGIN_TIME.id(), LocalDate.now().toString())
-                .append(Fields.REWARD_DAYS_CLAIMED.id(), new ArrayList<>());
-
-        usersCollection.insertOne(userDoc);
+    public List<Integer> getRewardsClaimed(Document document) {
+        return document.getList(Fields.REWARD_DAYS_CLAIMED.id(), Integer.class, new ArrayList<>());
     }
 
-    public int getConsecutiveDays(UUID uuid) {
-        return getUserDoc(uuid).getInteger(Fields.CONSECUTIVE_DAYS.id());
-    }
-
-    public List<Integer> getRewardsClaimed(UUID uuid) {
-        return getUserDoc(uuid).getList(Fields.REWARD_DAYS_CLAIMED.id(), Integer.class, new ArrayList<>());
-    }
-
-    public boolean hasDayClaimed(int day, UUID uuid) {
-        return getRewardsClaimed(uuid).contains(day);
+    public boolean connectedToday(Document document) {
+        String lastLogin = document.getString(Fields.LAST_LOGIN_TIME.id());
+        return lastLogin != null && lastLogin.equalsIgnoreCase(LocalDate.now().toString());
     }
 
     private void updateField(UUID uuid, Bson field) {
@@ -91,14 +88,5 @@ public class MongoDBProvider {
 
     public void updateLastLogin(UUID uuid) {
         updateField(uuid, Updates.set(Fields.LAST_LOGIN_TIME.id(), LocalDate.now().toString()));
-    }
-
-    public boolean connectedToday(UUID uuid) {
-        Document userDoc = getUserDoc(uuid);
-        if (userDoc == null) {
-            return false;
-        }
-        String lastLogin = userDoc.getString(Fields.LAST_LOGIN_TIME.id());
-        return lastLogin != null && lastLogin.equalsIgnoreCase(LocalDate.now().toString());
     }
 }

@@ -3,9 +3,10 @@ package josscoder.dailyreward.menu;
 import com.samjakob.spigui.buttons.SGButton;
 import com.samjakob.spigui.menu.SGMenu;
 import josscoder.dailyreward.DailyRewardPlugin;
-import josscoder.dailyreward.mongodb.MongoDBProvider;
 import josscoder.dailyreward.reward.RewardFactory;
 import josscoder.dailyreward.reward.data.Reward;
+import josscoder.dailyreward.session.SessionFactory;
+import josscoder.dailyreward.session.data.UserSession;
 import josscoder.dailyreward.utils.SkullUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,6 +40,13 @@ public class RewardMenu {
     }
 
     private void build() {
+        SessionFactory sessionFactory = SessionFactory.getInstance();
+
+        UserSession session = sessionFactory.getSession(player.getUniqueId());
+        if (session == null) {
+            return;
+        }
+
         //Ignore this, menu format, XD
         List<Integer> slots = new ArrayList<>();
         slots.add(3);
@@ -50,9 +58,7 @@ public class RewardMenu {
         }
         slots.removeAll(Arrays.asList(17, 18, 26, 27, 35, 36));
 
-
-        RewardFactory factory = RewardFactory.getInstance();
-        MongoDBProvider mongoDBProvider = MongoDBProvider.getInstance();
+        RewardFactory rewardFactory = RewardFactory.getInstance();
 
         AtomicInteger day = new AtomicInteger(1);
         slots.forEach(slot -> {
@@ -60,9 +66,9 @@ public class RewardMenu {
 
             SGButton button;
 
-            Reward reward = factory.getReward(dayNumber);
+            Reward reward = rewardFactory.getReward(dayNumber);
             if (reward != null) {
-                if (reward.getDay() > mongoDBProvider.getConsecutiveDays(player.getUniqueId())) {
+                if (reward.getDay() > session.getConsecutiveDays()) {
                     button = new SGButton(SkullUtils.getNoReadyRewardSkull(dayNumber))
                             .withListener((InventoryClickEvent event) -> {
                                 HumanEntity whoClicked = event.getWhoClicked();
@@ -71,7 +77,7 @@ public class RewardMenu {
                                 whoClicked.closeInventory();
                             });
                 } else {
-                    if (mongoDBProvider.hasDayClaimed(dayNumber, player.getUniqueId())) {
+                    if (session.hasDayClaimed(dayNumber)) {
                         button = new SGButton(SkullUtils.getClaimedRewardSkull(dayNumber))
                                 .withListener((InventoryClickEvent event) -> {
                                     HumanEntity whoClicked = event.getWhoClicked();
@@ -88,7 +94,7 @@ public class RewardMenu {
 
                                     ItemStack currentItem = event.getCurrentItem();
                                     if (currentItem != null) {
-                                        mongoDBProvider.claimDayReward(currentItem.getAmount(), player.getUniqueId());
+                                        session.claimDayReward(currentItem.getAmount());
                                     }
 
                                     reward.getCommands().forEach(cmd -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%player%", player.getName())));
@@ -102,7 +108,7 @@ public class RewardMenu {
                 withoutRewardItem.setAmount(dayNumber);
                 ItemMeta itemMeta = withoutRewardItem.getItemMeta();
                 if (itemMeta != null) {
-                    itemMeta.setDisplayName(" ");
+                    itemMeta.setDisplayName(ChatColor.RED + "No reward");
                     withoutRewardItem.setItemMeta(itemMeta);
                 }
 

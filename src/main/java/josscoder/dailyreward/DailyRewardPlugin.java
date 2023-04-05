@@ -5,6 +5,7 @@ import josscoder.dailyreward.listener.AccountHandlerListener;
 import josscoder.dailyreward.menu.RewardMenu;
 import josscoder.dailyreward.mongodb.MongoDBProvider;
 import josscoder.dailyreward.reward.RewardFactory;
+import josscoder.dailyreward.session.SessionFactory;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
@@ -30,13 +31,14 @@ public final class DailyRewardPlugin extends JavaPlugin {
         saveDefaultConfig();
 
         FileConfiguration config = getConfig();
+
         MongoDBProvider.make(config.getString("mongodb.host", "localhost"),
                 config.getInt("mongodb.port", 27017),
                 config.getString("mongodb.database"),
                 config.getString("mongodb.username"),
                 config.getString("mongodb.password", "password")
         );
-
+        SessionFactory.make();
         RewardFactory.make(config);
 
         getServer().getPluginManager().registerEvents(new AccountHandlerListener(), this);
