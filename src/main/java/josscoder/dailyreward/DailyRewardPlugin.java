@@ -1,7 +1,7 @@
 package josscoder.dailyreward;
 
 import com.samjakob.spigui.SpiGUI;
-import josscoder.dailyreward.listener.ConnectionListener;
+import josscoder.dailyreward.listener.AccountHandlerListener;
 import josscoder.dailyreward.menu.RewardMenu;
 import josscoder.dailyreward.mongodb.MongoDBProvider;
 import josscoder.dailyreward.reward.RewardFactory;
@@ -39,13 +39,13 @@ public final class DailyRewardPlugin extends JavaPlugin {
 
         RewardFactory.make(config);
 
-        getServer().getPluginManager().registerEvents(new ConnectionListener(), this);
+        getServer().getPluginManager().registerEvents(new AccountHandlerListener(), this);
 
         gui = new SpiGUI(this);
 
         PluginCommand pluginCommand = getServer().getPluginCommand("dailyreward");
         if (pluginCommand != null) {
-            pluginCommand.setExecutor((commandSender, command, s, strings) -> {
+            pluginCommand.setExecutor((commandSender, command, label, strings) -> {
                 if (!(commandSender instanceof Player)) {
                     return false;
                 }

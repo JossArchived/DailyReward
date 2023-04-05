@@ -49,19 +49,21 @@ public class RewardMenu {
             slots.add(i);
         }
         slots.removeAll(Arrays.asList(17, 18, 26, 27, 35, 36));
-        //
+
 
         RewardFactory factory = RewardFactory.getInstance();
         MongoDBProvider mongoDBProvider = MongoDBProvider.getInstance();
 
         AtomicInteger day = new AtomicInteger(1);
         slots.forEach(slot -> {
+            int dayNumber = day.get();
+
             SGButton button;
 
-            Reward reward = factory.getReward(day.get());
+            Reward reward = factory.getReward(dayNumber);
             if (reward != null) {
                 if (reward.getDay() > mongoDBProvider.getConsecutiveDays(player.getUniqueId())) {
-                    button = new SGButton(SkullUtils.getNoReadySkull(day.get()))
+                    button = new SGButton(SkullUtils.getNoReadyRewardSkull(dayNumber))
                             .withListener((InventoryClickEvent event) -> {
                                 HumanEntity whoClicked = event.getWhoClicked();
                                 whoClicked.getWorld().playSound(whoClicked.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 0.5f);
@@ -69,8 +71,8 @@ public class RewardMenu {
                                 whoClicked.closeInventory();
                             });
                 } else {
-                    if (mongoDBProvider.hasDayClaimed(day.get(), player.getUniqueId())) {
-                        button = new SGButton(SkullUtils.getClaimedSkull())
+                    if (mongoDBProvider.hasDayClaimed(dayNumber, player.getUniqueId())) {
+                        button = new SGButton(SkullUtils.getClaimedRewardSkull(dayNumber))
                                 .withListener((InventoryClickEvent event) -> {
                                     HumanEntity whoClicked = event.getWhoClicked();
                                     whoClicked.getWorld().playSound(whoClicked.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 0.5f);
@@ -78,7 +80,7 @@ public class RewardMenu {
                                     whoClicked.closeInventory();
                                 });
                     } else {
-                        button = new SGButton(SkullUtils.getRewardSkull(day.get()))
+                        button = new SGButton(SkullUtils.getRewardSkull(dayNumber))
                                 .withListener((InventoryClickEvent event) -> {
                                     HumanEntity whoClicked = event.getWhoClicked();
                                     whoClicked.getWorld().playSound(whoClicked.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
@@ -96,15 +98,15 @@ public class RewardMenu {
                     }
                 }
             } else {
-                ItemStack itemStack = new ItemStack(Material.BARRIER);
-                itemStack.setAmount(day.get());
-                ItemMeta itemMeta = itemStack.getItemMeta();
+                ItemStack withoutRewardItem = new ItemStack(Material.DRIED_KELP_BLOCK);
+                withoutRewardItem.setAmount(dayNumber);
+                ItemMeta itemMeta = withoutRewardItem.getItemMeta();
                 if (itemMeta != null) {
                     itemMeta.setDisplayName(" ");
-                    itemStack.setItemMeta(itemMeta);
+                    withoutRewardItem.setItemMeta(itemMeta);
                 }
 
-                button = new SGButton(itemStack)
+                button = new SGButton(withoutRewardItem)
                         .withListener((InventoryClickEvent event) -> {
                             HumanEntity whoClicked = event.getWhoClicked();
 
@@ -115,6 +117,19 @@ public class RewardMenu {
             }
 
             menuInstance.setButton(slot, button);
+
+            ItemStack closeItem = new ItemStack(Material.BARRIER);
+            ItemMeta itemMeta = closeItem.getItemMeta();
+            if (itemMeta != null) {
+                itemMeta.setDisplayName(ChatColor.RED + "Close");
+                closeItem.setItemMeta(itemMeta);
+            }
+
+            SGButton closeButton = new SGButton(closeItem).withListener((InventoryClickEvent event) -> {
+                event.getWhoClicked().closeInventory();
+            });
+
+            menuInstance.setButton(49, closeButton);
 
             day.addAndGet(1);
         });

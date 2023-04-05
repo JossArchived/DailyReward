@@ -7,14 +7,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SkullUtils {
 
-    public static ItemStack getClaimedSkull() {
+    public static ItemStack getClaimedRewardSkull(int day) {
         String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTIxYTNlMDRmNTBhYTkzZmJjMDBlY2IyZTcxYTJkOTUxNmZmZTQyMDZiZGNkZmE5NTNkNmJjZThmZmYxZDI0MyJ9fX0=";
 
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.RED + "Reward Claimed");
+            itemMeta.setDisplayName(ChatColor.RED + String.format("Reward of Day #%s (Claimed)", day));
             itemStack.setItemMeta(itemMeta);
         }
 
@@ -29,21 +29,21 @@ public class SkullUtils {
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&a&lReward of Day #" + day + " &r&b(Click to claim)"));
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', String.format("&a&lReward of Day #%s &r&b(Click to claim)", day)));
             itemStack.setItemMeta(itemMeta);
         }
 
         return itemStack;
     }
 
-    public static ItemStack getNoReadySkull(int day) {
+    public static ItemStack getNoReadyRewardSkull(int day) {
         String base64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWRjMjI0MTQ1MjVlMDUwZjlhZjRmZGVmMWE0YWM1YjljNTJhYWRiOGI0NThhMGRiNzVjYWM5MDU5ZDgyODJmIn19fQ==";
 
         ItemStack itemStack = SkullCreator.itemFromBase64(base64);
 
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) {
-            itemMeta.setDisplayName(String.format(ChatColor.RED + "Reward of Day #%s (No ready)", day));
+            itemMeta.setDisplayName(ChatColor.RED + String.format("Reward of Day #%s (No ready)", day));
             itemStack.setItemMeta(itemMeta);
         }
 

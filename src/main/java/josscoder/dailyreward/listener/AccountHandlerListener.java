@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.UUID;
 
-public class ConnectionListener implements Listener {
+public class AccountHandlerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     private void onJoin(PlayerJoinEvent event) {
