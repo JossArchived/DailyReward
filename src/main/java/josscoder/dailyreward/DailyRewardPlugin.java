@@ -34,8 +34,8 @@ public final class DailyRewardPlugin extends JavaPlugin {
 
         MongoDBProvider.make(config.getString("mongodb.host", "localhost"),
                 config.getInt("mongodb.port", 27017),
-                config.getString("mongodb.database"),
                 config.getString("mongodb.username"),
+                config.getString("mongodb.database"),
                 config.getString("mongodb.password", "password")
         );
         SessionFactory.make();
